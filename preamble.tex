@@ -1,0 +1,79 @@
+%% This file contains a number of tweaks that are typically applied to the main document.
+%% They are not enabled by default, but can be enabled by uncommenting the relevant lines.
+
+% Backport the lineno 5.9 two-column fix for TeX Live 2025's lineno 5.6--5.8.
+% These versions write column markers in the wrong place, putting review
+% line numbers over the opposite column. Newer lineno needs no patch.
+% https://github.com/latex-lineno/lineno/issues/26
+\makeatletter
+\@ifpackageloaded{lineno}{%
+  \@ifpackagelater{lineno}{2026/02/10}{%
+    \@ifpackagelater{lineno}{2026/03/07}{}{%
+      \IfFormatAtLeastTF{2025-06-01}{%
+        \RemoveFromHook{build/column/before}[lineno]
+        \IfHookEmptyTF{build/column/after}{}{%
+          \RemoveFromHook{build/column/after}[lineno]%
+        }%
+        \AddToHook{build/column/after}[cvpr-lineno-fix]{%
+          \setbox\@outputbox\vbox to\ht\@outputbox{%
+            \boxmaxdepth\@maxdepth
+            \protected@write\@auxout{}{%
+              \string\def\string\@LN@column{\if@firstcolumn1\else2\fi}%
+            }%
+            \unvbox\@outputbox
+          }%
+        }%
+      }{}%
+    }%
+  }{}%
+}{}%
+\makeatother
+
+%%
+%% Inline annotations; for predefined colors, refer to "dvipsnames" in the xcolor package:
+%% https://tinyurl.com/overleaf-colors
+%%
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\todo}[1]{{\color{red}#1}}
+\newcommand{\TODO}[1]{\textbf{\color{red}[TODO: #1]}}
+%%
+%% disable for camera ready / submission by uncommenting these lines  
+%%
+% \renewcommand{\TODO}[1]{}
+% \renewcommand{\todo}[1]{#1}
+
+%%
+%% work harder in optimizing text layout. Typically shrinks text by 1/6 of page, enable
+%% it at the very end of the writing process, when you are just above the page limit
+%%
+% \usepackage{microtype}
+
+%%
+%% fine-tune paragraph spacing
+%%
+% \renewcommand{\paragraph}[1]{\vspace{.5em}\noindent\textbf{#1.}}
+
+%%
+%% globally adjusts space between figure and caption
+%%
+% \setlength{\abovecaptionskip}{.5em}
+
+
+%%
+%% Allows "the use of \paper to refer to the project name"
+%% with automatic management of space at the end of the word
+%%
+% \usepackage{xspace}
+% \newcommand{\paper}{ProjectName\xspace}
+
+%%
+%% Commonly used math definitions
+%%
+% \DeclareMathOperator*{\argmin}{arg\,min}
+% \DeclareMathOperator*{\argmax}{arg\,max}
+
+%%
+%% Tigthen underline
+%%
+% \usepackage{soul}
+% \setuldepth{foobar}
